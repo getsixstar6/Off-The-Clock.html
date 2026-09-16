@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<!-- saved from url=(0057)file:///C:/Users/adill/Downloads/off_the_clock_app_6.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Off The Clock</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="./Off The Clock_files/css2" rel="stylesheet">
+<style>
+  :root{
+    --ivory:#F7F2E9; --paper:#FFFDFA; --ink:#2A2521; --ink-soft:#6B6255;
+    --hunter:#1C3A33; --hunter-dark:#12261F; --brass:#A9814B; --brass-light:#E4D3AE;
+    --line:#E7DFCC; --alert:#8C4A3A; --tank-empty:#EFE8D8;
+  }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+  body{
+    margin:0; background:var(--ivory); font-family:'Jost',sans-serif; color:var(--ink);
+    display:flex; justify-content:center;
+  }
+  .app{ width:100%; max-width:430px; min-height:100vh; background:var(--paper); position:relative; padding-bottom:40px; }
+
+  header{
+    background:var(--hunter); color:var(--ivory); padding:18px 20px 16px;
+    border-radius:0 0 18px 18px; position:sticky; top:0; z-index:5;
+  }
+  .kicker{ font-size:9.5px; letter-spacing:2px; color:var(--brass-light); opacity:0.9; }
+  .title-row{ display:flex; justify-content:space-between; align-items:baseline; margin-top:3px; }
+  h1{ font-family:'Fraunces',serif; font-weight:600; font-size:23px; margin:0; }
+  .date-chip{ font-size:11px; color:var(--brass-light); }
+
+  .shift-chips{ display:flex; gap:6px; margin-top:12px; flex-wrap:wrap; }
+  .chip{
+    font-size:10.5px; padding:6px 11px; border-radius:20px; border:1px solid rgba(228,211,174,0.5);
+    color:var(--brass-light); background:rgba(255,255,255,0.04); cursor:pointer; user-select:none;
+  }
+  .chip.active{ background:var(--brass); color:var(--hunter-dark); border-color:var(--brass); font-weight:500; }
+
+  .encourage{
+    margin:16px 18px 4px; background:linear-gradient(135deg, rgba(169,129,75,0.12), rgba(28,58,51,0.06));
+    border:1px solid var(--brass-light); border-radius:14px; padding:14px 16px;
+  }
+  .encourage p{
+    font-family:'Fraunces',serif; font-style:italic; font-size:14px; line-height:1.45; color:var(--hunter); margin:0 0 8px;
+  }
+  .encourage button{
+    border:none; background:none; color:var(--brass); font-size:10px; letter-spacing:0.5px;
+    padding:0; cursor:pointer; font-family:'Jost',sans-serif;
+  }
+
+  .card{ margin:14px 18px 0; padding:15px 16px; border:1px solid var(--line); border-radius:14px; background:var(--paper); }
+  .card-title{ display:flex; align-items:baseline; gap:7px; margin-bottom:2px; }
+  .card-title .num{ font-family:'Fraunces',serif; font-style:italic; color:var(--brass); font-size:12px; }
+  .card-title h2{ font-family:'Fraunces',serif; font-weight:600; font-size:15.5px; margin:0; color:var(--hunter); }
+  .card-sub{ font-size:10.5px; color:var(--ink-soft); margin:0 0 12px; }
+
+  .tap-row{ display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid var(--line); }
+  .tap-row:last-child{ border-bottom:none; }
+  .tap-box{
+    width:24px; height:24px; border-radius:7px; border:1.5px solid var(--hunter); flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; font-size:14px; color:var(--paper); cursor:pointer;
+  }
+  .tap-box.checked{ background:var(--hunter); }
+  .tap-label{ font-size:12.5px; flex:1; }
+
+  .quick-input{
+    width:100%; border:none; border-bottom:1px dotted var(--line); background:transparent;
+    font-family:'Jost',sans-serif; font-size:12.5px; padding:8px 2px; outline:none; color:var(--ink);
+  }
+  .quick-input::placeholder{ color:#B7ADA0; }
+  .add-note-btn{
+    margin-top:8px; font-size:11px; color:var(--brass); background:none; border:none; padding:0; cursor:pointer;
+  }
+
+  .num-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .num-field label{ display:block; font-size:9.5px; color:var(--brass); letter-spacing:0.5px; margin-bottom:4px; }
+  .num-field input{
+    width:100%; border:1px solid var(--line); border-radius:8px; padding:9px 10px; font-size:14px;
+    font-family:'Jost',sans-serif; outline:none; background:var(--ivory);
+  }
+  .tip-total{ margin-top:10px; text-align:right; font-size:12px; color:var(--hunter); font-weight:500; }
+
+  .dot-row{ display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+  .dot-label{ font-size:11.5px; color:var(--ink-soft); }
+  .dots{ display:flex; gap:5px; }
+  .dot{
+    width:22px; height:22px; border-radius:50%; border:1.5px solid var(--hunter); cursor:pointer;
+  }
+  .dot.filled{ background:var(--hunter); }
+  .mask-note{ font-size:9.5px; color:var(--brass); font-style:italic; margin-top:2px; }
+
+  .tank-strip{ display:flex; justify-content:space-between; margin-top:4px; }
+  .tank-day{ text-align:center; flex:1; }
+  .tank-day .d-label{ font-size:9px; color:var(--brass); margin-bottom:6px; }
+  .tank-dot{
+    width:26px; height:26px; border-radius:50%; border:1.5px solid var(--hunter); margin:0 auto; cursor:pointer;
+    background:var(--tank-empty); position:relative;
+  }
+  .tank-dot.today{ box-shadow:0 0 0 2px var(--brass); }
+  .tank-dot[data-v="1"]{ background:linear-gradient(180deg, var(--hunter) 50%, var(--tank-empty) 50%); }
+  .tank-dot[data-v="2"]{ background:var(--hunter); }
+
+  .reset-box{ background:var(--hunter); color:var(--ivory); border-radius:14px; margin:14px 18px 0; padding:15px 16px; }
+  .reset-box .card-title h2{ color:var(--brass-light); }
+  .reset-box .tap-row{ border-bottom-color:rgba(228,211,174,0.2); }
+  .reset-box .tap-box{ border-color:var(--brass-light); }
+  .reset-box .tap-box.checked{ background:var(--brass-light); }
+  .reset-box .tap-label{ color:var(--ivory); }
+
+  .footer-note{
+    text-align:center; margin:22px 22px 0; font-size:9.5px; color:var(--ink-soft); line-height:1.5;
+  }
+  .footer-brand{ font-family:'Fraunces',serif; font-style:italic; color:var(--brass); font-size:11px; display:block; margin-bottom:4px; }
+
+  .save-pulse{ position:fixed; bottom:14px; left:50%; transform:translateX(-50%); background:var(--hunter); color:var(--ivory);
+    font-size:10.5px; padding:7px 14px; border-radius:20px; opacity:0; transition:opacity 0.3s; pointer-events:none; z-index:20; }
+  .save-pulse.show{ opacity:0.92; }
+
+  .reset-link{ display:block; text-align:center; margin-top:18px; font-size:10px; color:#B7ADA0; text-decoration:underline; cursor:pointer; }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <header>
+    <div class="kicker">SIX-STAR TREATMENT, FOR THE PEOPLE WHO GIVE IT</div>
+    <div class="title-row">
+      <h1>Off The Clock</h1>
+      <span class="date-chip" id="dateChip">Wed, Sep 16</span>
+    </div>
+    <div class="shift-chips" id="shiftChips">
+      <div class="chip" data-shift="AM">AM</div>
+      <div class="chip" data-shift="PM">PM</div>
+      <div class="chip" data-shift="Split">Split</div>
+      <div class="chip" data-shift="Overnight">Overnight</div>
+      <div class="chip" data-shift="Double">Double</div>
+    </div>
+  </header>
+
+  <div class="encourage">
+    <p id="encourageLine">Nobody claps when you hold your face together for eight hours. We see it anyway.</p>
+    <button id="newLineBtn">↻ another line</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="num">I.</span><h2>Before You Clock In</h2></div>
+    <p class="card-sub">Tap as you go — no writing required</p>
+    <div id="preShift"><div class="tap-row"><div class="tap-box"></div><div class="tap-label">Water bottle filled</div></div><div class="tap-row"><div class="tap-box"></div><div class="tap-label">Comfortable shoes, laced</div></div><div class="tap-row"><div class="tap-box"></div><div class="tap-label">Something to eat packed — not just coffee</div></div><div class="tap-row"><div class="tap-box"></div><div class="tap-label">One thing after shift to look forward to</div></div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="num">II.</span><h2>On the Floor</h2></div>
+    <p class="card-sub">Quick capture — a phrase is enough</p>
+    <div id="captureList"><input class="quick-input" placeholder="Guest request, restock, reminder…"></div>
+    <button class="add-note-btn" id="addCaptureBtn">+ add a line</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="num">III.</span><h2>Tip Tracker</h2></div>
+    <p class="card-sub">So the numbers don't live in your head</p>
+    <div class="num-grid">
+      <div class="num-field"><label>CASH TIPS</label><input type="number" inputmode="decimal" id="cashTips" placeholder="0"></div>
+      <div class="num-field"><label>CARD / POOLED</label><input type="number" inputmode="decimal" id="cardTips" placeholder="0"></div>
+      <div class="num-field"><label>HOURS WORKED</label><input type="number" inputmode="decimal" id="hoursWorked" placeholder="0"></div>
+      <div class="num-field"><label>HOURLY RATE</label><input type="number" inputmode="decimal" id="hourlyRate" placeholder="0.00"></div>
+    </div>
+    <div class="tip-total" id="tipTotal">Total: $0.00</div>
+    <div class="tip-total" id="effRate" style="color:var(--ink-soft); font-weight:400; font-size:11px; margin-top:2px;">Effective rate: —</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="num">IV.</span><h2>The Mask Check</h2></div>
+    <p class="card-sub">Notice the difference — worth seeing, not just feeling.</p>
+    <div class="dot-row">
+      <span class="dot-label">What I showed today</span>
+      <div class="dots" data-group="showed"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+    </div>
+    <div class="dot-row" style="margin-bottom:2px;">
+      <span class="dot-label">What I actually felt</span>
+      <div class="dots" data-group="felt"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+    </div>
+    <div class="mask-note">A wide gap most days, not just one, is worth telling someone about.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="num">V.</span><h2>Handoff Notes</h2></div>
+    <p class="card-sub">What the next shift needs, so nothing drops between you</p>
+    <input class="quick-input" id="handoffGuest" placeholder="Guest / table / room">
+    <input class="quick-input" id="handoffWhat" placeholder="What happened">
+    <input class="quick-input" id="handoffNext" placeholder="What still needs to happen">
+  </div>
+
+  <div class="reset-box">
+    <div class="card-title"><span class="num" style="color:var(--brass-light);">VI.</span><h2>Clock-Out Reset</h2></div>
+    <div id="clockoutList"><div class="tap-row"><div class="tap-box"></div><div class="tap-label">Change out of the uniform</div></div><div class="tap-row"><div class="tap-box"></div><div class="tap-label">Drink water, not just eat standing up</div></div><div class="tap-row"><div class="tap-box"></div><div class="tap-label">Text one person who isn't a guest or a coworker</div></div><div class="tap-row"><div class="tap-box"></div><div class="tap-label">Take the mask off on purpose — it doesn't come off by itself</div></div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="num">VII.</span><h2>Off the Clock</h2></div>
+    <p class="card-sub">Whatever's left of today belongs to you</p>
+    <input class="quick-input" id="tookMore" placeholder="Took more out of me than it should have…">
+    <div id="offClockList" style="margin-top:6px;"><div class="tap-row"><div class="tap-box"></div><div class="tap-label">Did one thing that had nothing to do with work</div></div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="num">VIII.</span><h2>This Week's Tank</h2></div>
+    <p class="card-sub">Tap a day: empty → half → full. Watch the pattern, not one bad shift.</p>
+    <div class="tank-strip" id="tankStrip"><div class="tank-day"><div class="d-label">T</div><div class="tank-dot" data-v="0"></div></div><div class="tank-day"><div class="d-label">F</div><div class="tank-dot" data-v="0"></div></div><div class="tank-day"><div class="d-label">S</div><div class="tank-dot" data-v="0"></div></div><div class="tank-day"><div class="d-label">S</div><div class="tank-dot" data-v="0"></div></div><div class="tank-day"><div class="d-label">M</div><div class="tank-dot" data-v="0"></div></div><div class="tank-day"><div class="d-label">T</div><div class="tank-dot" data-v="0"></div></div><div class="tank-day"><div class="d-label">W</div><div class="tank-dot today" data-v="0"></div></div></div>
+  </div>
+
+  <div class="footer-note">
+    <span class="footer-brand">Off The Clock</span>
+    Because the shift ends, even when the smile doesn't.<br>
+    If a day feels like more than tired, go for a walk, watch a movie, get ice-cream, you are not alone.
+    <div class="reset-link" id="resetLink">clear today's entry</div>
+  </div>
+
+</div>
+<div class="save-pulse" id="savePulse">Saved</div>
+
+<script>
+const todayKey = new Date().toISOString().slice(0,10);
+const dateDisplay = new Date().toLocaleDateString(undefined, { weekday:'short', month:'short', day:'numeric' });
+document.getElementById('dateChip').textContent = dateDisplay;
+
+const PRE_SHIFT = ["Water bottle filled","Comfortable shoes, laced","Something to eat packed — not just coffee","One thing after shift to look forward to"];
+const CLOCKOUT = ["Change out of the uniform","Drink water, not just eat standing up","Text one person who isn't a guest or a coworker","Take the mask off on purpose — it doesn't come off by itself"];
+const OFF_CLOCK = ["Did one thing that had nothing to do with work"];
+
+const LINES = [
+  "The guests get the version of you that's on the clock. This is for the version that isn't.",
+  "Tired is not the same as failing.",
+  "Nobody claps when you hold your face together for eight hours. We see it anyway.",
+  "The smile was for them. This is for you.",
+  "You don't owe anyone your last ounce of patience — save some for yourself.",
+  "A hard shift ending is still an ending.",
+  "You ran on fumes and still got it done. That's real, not nothing.",
+  "Rest isn't the reward for finishing. It's part of the job too.",
+  "Whatever today asked of you — it's over now.",
+  "You held the floor today. That counts for something.",
+  "Being 'on' all day is real labor, even when nobody puts it on the schedule.",
+  "You're allowed to be proud and exhausted at the same time."
+];
+
+let state = {
+  shift: null,
+  preShift: [false,false,false,false],
+  capture: [""],
+  tips: { cash:"", card:"", hours:"", rate:"" },
+  mask: { showed:0, felt:0 },
+  handoff: { guest:"", what:"", next:"" },
+  clockout: [false,false,false,false],
+  offClock: { note:"", done:[false] },
+  tank: 0
+};
+
+const saveEl = document.getElementById('savePulse');
+function pulseSave(){
+  saveEl.classList.add('show');
+  clearTimeout(pulseSave._t);
+  pulseSave._t = setTimeout(()=>saveEl.classList.remove('show'), 900);
+}
+
+async function loadToday(){
+  try{
+    const raw = localStorage.getItem('otc_entry_'+todayKey);
+    if(raw){ state = Object.assign(state, JSON.parse(raw)); }
+  }catch(e){ /* no entry yet for today, defaults stand */ }
+  render();
+  loadTankStrip();
+}
+
+async function saveToday(){
+  try{
+    localStorage.setItem('otc_entry_'+todayKey, JSON.stringify(state));
+    pulseSave();
+  }catch(e){ console.error('Save failed', e); }
+}
+
+function render(){
+  // shift chips
+  document.querySelectorAll('.chip').forEach(c=>{
+    c.classList.toggle('active', c.dataset.shift === state.shift);
+  });
+
+  // pre-shift
+  const pre = document.getElementById('preShift');
+  pre.innerHTML = '';
+  PRE_SHIFT.forEach((label,i)=>{
+    pre.appendChild(makeTapRow(label, state.preShift[i], ()=>{
+      state.preShift[i] = !state.preShift[i]; saveToday(); render();
+    }));
+  });
+
+  // capture list
+  const cap = document.getElementById('captureList');
+  cap.innerHTML = '';
+  state.capture.forEach((val,i)=>{
+    const inp = document.createElement('input');
+    inp.className = 'quick-input';
+    inp.placeholder = 'Guest request, restock, reminder…';
+    inp.value = val;
+    inp.addEventListener('change', ()=>{ state.capture[i] = inp.value; saveToday(); });
+    cap.appendChild(inp);
+  });
+
+  // tips
+  document.getElementById('cashTips').value = state.tips.cash;
+  document.getElementById('cardTips').value = state.tips.card;
+  document.getElementById('hoursWorked').value = state.tips.hours;
+  document.getElementById('hourlyRate').value = state.tips.rate;
+  updateTipTotal();
+
+  // mask dots
+  renderDots('showed', state.mask.showed);
+  renderDots('felt', state.mask.felt);
+
+  // handoff
+  document.getElementById('handoffGuest').value = state.handoff.guest;
+  document.getElementById('handoffWhat').value = state.handoff.what;
+  document.getElementById('handoffNext').value = state.handoff.next;
+
+  // clockout
+  const co = document.getElementById('clockoutList');
+  co.innerHTML = '';
+  CLOCKOUT.forEach((label,i)=>{
+    co.appendChild(makeTapRow(label, state.clockout[i], ()=>{
+      state.clockout[i] = !state.clockout[i]; saveToday(); render();
+    }, true));
+  });
+
+  // off clock
+  document.getElementById('tookMore').value = state.offClock.note;
+  const oc = document.getElementById('offClockList');
+  oc.innerHTML = '';
+  OFF_CLOCK.forEach((label,i)=>{
+    oc.appendChild(makeTapRow(label, state.offClock.done[i], ()=>{
+      state.offClock.done[i] = !state.offClock.done[i]; saveToday(); render();
+    }));
+  });
+}
+
+function makeTapRow(label, checked, onToggle, dark){
+  const row = document.createElement('div');
+  row.className = 'tap-row';
+  const box = document.createElement('div');
+  box.className = 'tap-box' + (checked ? ' checked' : '');
+  box.textContent = checked ? '✓' : '';
+  box.addEventListener('click', onToggle);
+  const lab = document.createElement('div');
+  lab.className = 'tap-label';
+  lab.textContent = label;
+  row.appendChild(box); row.appendChild(lab);
+  return row;
+}
+
+function renderDots(group, value){
+  const wrap = document.querySelector(`.dots[data-group="${group}"]`);
+  wrap.innerHTML = '';
+  for(let i=1;i<=5;i++){
+    const d = document.createElement('div');
+    d.className = 'dot' + (i<=value ? ' filled' : '');
+    d.addEventListener('click', ()=>{
+      state.mask[group] = (state.mask[group] === i) ? 0 : i;
+      saveToday(); render();
+    });
+    wrap.appendChild(d);
+  }
+}
+
+function updateTipTotal(){
+  const cash = parseFloat(state.tips.cash)||0;
+  const card = parseFloat(state.tips.card)||0;
+  const hours = parseFloat(state.tips.hours)||0;
+  const rate = parseFloat(state.tips.rate)||0;
+  const wages = rate * hours;
+  const total = cash + card + wages;
+  document.getElementById('tipTotal').textContent = `Total: $${total.toFixed(2)}`;
+  document.getElementById('effRate').textContent = hours>0 ? `Effective rate: $${(total/hours).toFixed(2)}/hr` : 'Effective rate: —';
+}
+
+// events
+document.getElementById('shiftChips').addEventListener('click', (e)=>{
+  const chip = e.target.closest('.chip');
+  if(!chip) return;
+  state.shift = state.shift === chip.dataset.shift ? null : chip.dataset.shift;
+  saveToday(); render();
+});
+
+document.getElementById('addCaptureBtn').addEventListener('click', ()=>{
+  state.capture.push("");
+  render();
+});
+
+['cashTips','cardTips','hoursWorked','hourlyRate'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', (e)=>{
+    const map = { cashTips:'cash', cardTips:'card', hoursWorked:'hours', hourlyRate:'rate' };
+    state.tips[map[id]] = e.target.value;
+    updateTipTotal();
+  });
+  document.getElementById(id).addEventListener('change', saveToday);
+});
+
+['handoffGuest','handoffWhat','handoffNext'].forEach(id=>{
+  document.getElementById(id).addEventListener('change', (e)=>{
+    const map = { handoffGuest:'guest', handoffWhat:'what', handoffNext:'next' };
+    state.handoff[map[id]] = e.target.value;
+    saveToday();
+  });
+});
+
+document.getElementById('tookMore').addEventListener('change', (e)=>{
+  state.offClock.note = e.target.value;
+  saveToday();
+});
+
+function newLine(){
+  const line = LINES[Math.floor(Math.random()*LINES.length)];
+  document.getElementById('encourageLine').textContent = line;
+}
+document.getElementById('newLineBtn').addEventListener('click', newLine);
+newLine();
+
+document.getElementById('resetLink').addEventListener('click', async ()=>{
+  if(!confirm("Clear today's entry? This can't be undone.")) return;
+  state = { shift:null, preShift:[false,false,false,false], capture:[""], tips:{cash:"",card:"",hours:""},
+    mask:{showed:0,felt:0}, handoff:{guest:"",what:"",next:""}, clockout:[false,false,false,false],
+    offClock:{note:"",done:[false]}, tank:0 };
+  await saveToday();
+  render();
+});
+
+// Weekly tank strip — last 7 calendar days including today
+async function loadTankStrip(){
+  const strip = document.getElementById('tankStrip');
+  strip.innerHTML = '';
+  const days = [];
+  for(let i=6;i>=0;i--){
+    const d = new Date();
+    d.setDate(d.getDate()-i);
+    days.push(d);
+  }
+  for(const d of days){
+    const key = d.toISOString().slice(0,10);
+    const label = d.toLocaleDateString(undefined,{weekday:'narrow'});
+    let val = 0;
+    if(key === todayKey){
+      val = state.tank;
+    } else {
+      try{
+        const raw = localStorage.getItem('otc_entry_'+key);
+        if(raw){ val = (JSON.parse(raw).tank)||0; }
+      }catch(e){ val = 0; }
+    }
+    const col = document.createElement('div');
+    col.className = 'tank-day';
+    const lab = document.createElement('div');
+    lab.className = 'd-label'; lab.textContent = label;
+    const dot = document.createElement('div');
+    dot.className = 'tank-dot' + (key===todayKey ? ' today' : '');
+    dot.dataset.v = val;
+    if(key === todayKey){
+      dot.addEventListener('click', ()=>{
+        state.tank = (state.tank+1)%3;
+        dot.dataset.v = state.tank;
+        saveToday();
+      });
+    }
+    col.appendChild(lab); col.appendChild(dot);
+    strip.appendChild(col);
+  }
+}
+
+loadToday();
+</script>
+
+
+</body></html>
